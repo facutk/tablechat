@@ -1,5 +1,8 @@
 import express from 'express';
+import cors from 'cors';
+
 const app = express();
+app.use(cors());
 
 app.get('/api/status', (req, res) => {
   res.json({ message: 'tablechat' });
