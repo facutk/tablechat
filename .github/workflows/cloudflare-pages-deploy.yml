@@ -1,0 +1,26 @@
+on:
+  push:
+    branches: ['main']
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Deploy to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          cd playground/vite-initial
+          npm install
+          npm run build
+      - name: Publish
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: tablechat-ui
+          directory: playground/vite-initial/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
