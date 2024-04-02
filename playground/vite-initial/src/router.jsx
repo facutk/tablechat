@@ -22,18 +22,18 @@ const About = () => {
   );
 };
 
-const Status = () => {
+const Healthz = () => {
   const [status, setStatus] = useState('Loading...');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/status`)
+    fetch(`${API_URL}/api/healthz`)
       .then((response) => response.json())
-      .then((data) => setStatus(data.message));
+      .then((data) => setStatus(data.status));
   }, []);
 
   return (
     <div>
-      <h2>Status</h2>
+      <h2>Healthz</h2>
       <div>{status}</div>
     </div>
   );
@@ -142,7 +142,7 @@ const Root = () => {
             <Link to="/faq">FAQ</Link>
           </li>
           <li>
-            <Link to="/status">Status</Link>
+            <Link to="/healthz">Healthz</Link>
           </li>
         </ul>
       </div>
@@ -177,8 +177,8 @@ const routes = [
         element: <FAQ />,
       },
       {
-        path: '/status',
-        element: <Status />,
+        path: '/healthz',
+        element: <Healthz />,
       },
     ],
   },

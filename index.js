@@ -4,8 +4,8 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 
-app.get('/api/status', (req, res) => {
-  res.json({ message: 'tablechat' });
+app.get('/api/healthz', (req, res) => {
+  res.json({ status: 'healthy' });
 });
 
 const { HOST = '0.0.0.0', PORT = 3000 } = process.env;
