@@ -1,13 +1,55 @@
 import { useEffect, useState } from 'react';
 import { createHashRouter, Link, Outlet } from 'react-router-dom';
+import { getFingerprint } from '@thumbmarkjs/thumbmarkjs';
 
-import { API_URL } from './config'
+import { API_URL } from './config';
+import Tilt from 'react-parallax-tilt';
+import './tilt.css';
+import Device from './Device';
 
 const Home = () => {
   return (
     <div>
       <h2>tablechat.me</h2>
       <div>A new way to chat</div>
+    </div>
+  );
+};
+
+const Fingerprint = () => {
+  const [fingerprint, setFingerprint] = useState('');
+
+  useEffect(() => {
+    getFingerprint()
+      .then((result) => {
+        setFingerprint(result);
+      })
+      .catch((error) => {
+        console.error('Error getting fingerprint:', error);
+      });
+  }, []);
+
+  return (
+    <div>
+      <h2>Fingerprint</h2>
+      <div>{fingerprint}</div>
+    </div>
+  );
+};
+
+const Phone = () => {
+  return (
+    <div>
+      <Tilt
+        glareEnable={true}
+        glareMaxOpacity={0.8}
+        glareColor="#ffffff"
+        glarePosition="bottom"
+        glareBorderRadius="20px"
+        className="default-component"
+      >
+        <Device />
+      </Tilt>
     </div>
   );
 };
@@ -144,6 +186,12 @@ const Root = () => {
           <li>
             <Link to="/healthz">Healthz</Link>
           </li>
+          <li>
+            <Link to="/phone">Phone</Link>
+          </li>
+          <li>
+            <Link to="/fingerprint">Fingerprint</Link>
+          </li>
         </ul>
       </div>
       <Outlet />
@@ -179,6 +227,14 @@ const routes = [
       {
         path: '/healthz',
         element: <Healthz />,
+      },
+      {
+        path: '/phone',
+        element: <Phone />,
+      },
+      {
+        path: '/fingerprint',
+        element: <Fingerprint />,
       },
     ],
   },
