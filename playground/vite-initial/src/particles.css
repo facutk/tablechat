@@ -1,0 +1,15 @@
+#tsparticles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  100% { opacity: 0;}
+}

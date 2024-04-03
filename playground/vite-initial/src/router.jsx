@@ -2,10 +2,14 @@ import { useEffect, useState } from 'react';
 import { createHashRouter, Link, Outlet } from 'react-router-dom';
 import { getFingerprint } from '@thumbmarkjs/thumbmarkjs';
 
+import { initParticlesEngine } from '@tsparticles/react';
+import { loadSlim } from '@tsparticles/slim'; // if you are going to use `loadSlim`, install the "@tsparticles/slim" package too.
+
 import { API_URL } from './config';
 import Tilt from 'react-parallax-tilt';
 import './tilt.css';
 import Device from './Device';
+import ParticlesDemo from './ParticlesDemo';
 
 const Home = () => {
   return (
@@ -38,18 +42,55 @@ const Fingerprint = () => {
 };
 
 const Phone = () => {
+  const [color, setColor] = useState('#0d47a1');
+  const [init, setInit] = useState(false);
+
+  // this should be run only once per application lifetime
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
+      // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+      // starting from v2 you can add only the features you need reducing the bundle size
+      //await loadAll(engine);
+      //await loadFull(engine);
+      await loadSlim(engine);
+      //await loadBasic(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
+  const handleClick = () => {
+    setColor('#' + Math.floor(Math.random() * 16777215).toString(16));
+  }
+
   return (
     <div>
-      <Tilt
-        glareEnable={true}
-        glareMaxOpacity={0.8}
-        glareColor="#ffffff"
-        glarePosition="bottom"
-        glareBorderRadius="20px"
-        className="default-component"
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onClick={handleClick}
       >
-        <Device />
-      </Tilt>
+        <Tilt
+          glareEnable={true}
+          glareMaxOpacity={0.8}
+          glareColor="#ffffff"
+          glarePosition="bottom"
+          glareBorderRadius="20px"
+          className="default-component"
+        >
+          <Device />
+        </Tilt>
+      </div>
+      <ParticlesDemo color={color} init={init} key={color} />
+      <input
+        type="color"
+        value={color}
+        onChange={(e) => setColor(e.target.value)}
+      />
     </div>
   );
 };
