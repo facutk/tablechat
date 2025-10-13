@@ -131,3 +131,6 @@ dist
 
 # sqlite files
 data
+tmp
+
+*_templ.go
