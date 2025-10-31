@@ -69,6 +69,17 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_CICD_GITHUB_ACTIONS_PRIVATE_KEY }}
           script: |
+            set -e
+            SHA=${{ steps.commit.outputs.sha }}
+            ENVFILE=~/.env
+
+            # replace GITSHA if present, otherwise append
+            if grep -q '^GITSHA=' "$ENVFILE"; then
+              sed -i "s/^GITSHA=.*/GITSHA=${SHA}/" "$ENVFILE"
+            else
+              echo "GITSHA=${SHA}" >> "$ENVFILE"
+            fi
+
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.commit.outputs.sha }}
             docker stop tablechat
             docker rm tablechat
