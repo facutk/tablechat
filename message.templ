@@ -1,20 +1,20 @@
 package main
 
 templ message(message string) {
-  @layout("💬 tablechat.me") {
+  @layout("tablechat.me") {
     <div id="message-fragment">
-  <h2 class="text-lg font-semibold">Stored message</h2>
+      <h2 class="text-lg font-semibold">Stored message</h2>
 
-  <div class="mb-4">
-    <pre>{message}</pre>
-  </div>
+      <div class="mb-4">
+        <pre>{message}</pre>
+      </div>
 
-  <form hx-post="/message" hx-target="#message-fragment" hx-swap="innerHTML">
-    <textarea name="message" rows="6" cols="80" class="block w-full p-2 border rounded">{message}</textarea>
-    <div class="mt-2">
-      <button type="submit" class="px-3 py-1 bg-violet-700 text-white rounded">Save</button>
+      <form hx-post="/message" hx-target="#message-fragment" hx-swap="innerHTML">
+        <textarea name="message" rows="6" cols="80" class="block w-full p-2 border rounded">{message}</textarea>
+        <div class="mt-2">
+          <button type="submit" class="px-3 py-1 bg-violet-700 text-white rounded">Save</button>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
   }
 }
