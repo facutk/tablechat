@@ -24,21 +24,20 @@ func (q *Queries) CreateMessage(ctx context.Context, message string) (Message, e
 
 const deleteMessage = `-- name: DeleteMessage :exec
 DELETE FROM messages
-WHERE id = ?
 `
 
-func (q *Queries) DeleteMessage(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deleteMessage, id)
+func (q *Queries) DeleteMessage(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, deleteMessage)
 	return err
 }
 
 const getMessage = `-- name: GetMessage :one
 SELECT id, message, created_at FROM messages
-WHERE id = ? LIMIT 1
+LIMIT 1
 `
 
-func (q *Queries) GetMessage(ctx context.Context, id int64) (Message, error) {
-	row := q.db.QueryRowContext(ctx, getMessage, id)
+func (q *Queries) GetMessage(ctx context.Context) (Message, error) {
+	row := q.db.QueryRowContext(ctx, getMessage)
 	var i Message
 	err := row.Scan(&i.ID, &i.Message, &i.CreatedAt)
 	return i, err
@@ -47,38 +46,27 @@ func (q *Queries) GetMessage(ctx context.Context, id int64) (Message, error) {
 const updateMessage = `-- name: UpdateMessage :one
 UPDATE messages
 SET message = ?
-WHERE id = ?
 RETURNING id, message, created_at
 `
 
-type UpdateMessageParams struct {
-	Message string `json:"message"`
-	ID      int64  `json:"id"`
-}
-
-func (q *Queries) UpdateMessage(ctx context.Context, arg UpdateMessageParams) (Message, error) {
-	row := q.db.QueryRowContext(ctx, updateMessage, arg.Message, arg.ID)
+func (q *Queries) UpdateMessage(ctx context.Context, message string) (Message, error) {
+	row := q.db.QueryRowContext(ctx, updateMessage, message)
 	var i Message
 	err := row.Scan(&i.ID, &i.Message, &i.CreatedAt)
 	return i, err
 }
 
 const upsertMessage = `-- name: UpsertMessage :one
-INSERT INTO messages (id, message)
-VALUES (?, ?)
-ON CONFLICT (id) DO UPDATE SET
+INSERT INTO messages (message)
+VALUES (?)
+ON CONFLICT DO UPDATE SET
   message = excluded.message,
   updated_at = CURRENT_TIMESTAMP
 RETURNING id, message, created_at
 `
 
-type UpsertMessageParams struct {
-	ID      int64  `json:"id"`
-	Message string `json:"message"`
-}
-
-func (q *Queries) UpsertMessage(ctx context.Context, arg UpsertMessageParams) (Message, error) {
-	row := q.db.QueryRowContext(ctx, upsertMessage, arg.ID, arg.Message)
+func (q *Queries) UpsertMessage(ctx context.Context, message string) (Message, error) {
+	row := q.db.QueryRowContext(ctx, upsertMessage, message)
 	var i Message
 	err := row.Scan(&i.ID, &i.Message, &i.CreatedAt)
 	return i, err

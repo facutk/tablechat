@@ -29,7 +29,7 @@ func (app *App) registerMessageRoutes(r chi.Router) {
 
 func (app *App) readMessage() (string, error) {
 	// Use ID 1 for the message, or adjust as needed
-	msg, err := app.queries.GetMessage(app.ctx, 1)
+	msg, err := app.queries.GetMessage(app.ctx)
 	if err != nil {
 		// Handle the case where message doesn't exist yet
 		// You might want to return an empty string or create a default message
@@ -66,10 +66,7 @@ func (app *App) messagePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	m := r.PostFormValue("message")
 
-	_, err := app.queries.UpsertMessage(app.ctx, db.UpsertMessageParams{
-		ID:      1, // Assuming you're updating the message with ID 1
-		Message: m,
-	})
+	_, err := app.queries.UpsertMessage(app.ctx, m)
 	if err != nil {
 		http.Error(w, "could not save message to database", http.StatusInternalServerError)
 		return
@@ -113,7 +110,7 @@ func main() {
 	// }
 
 	// Example: Get the message back
-	retrievedMessage, err := queries.GetMessage(ctx, 1)
+	retrievedMessage, err := queries.GetMessage(ctx)
 	if err != nil {
 		log.Printf("Could not retrieve message: %v", err)
 	} else {

@@ -10,10 +10,10 @@ import (
 
 type Querier interface {
 	CreateMessage(ctx context.Context, message string) (Message, error)
-	DeleteMessage(ctx context.Context, id int64) error
-	GetMessage(ctx context.Context, id int64) (Message, error)
-	UpdateMessage(ctx context.Context, arg UpdateMessageParams) (Message, error)
-	UpsertMessage(ctx context.Context, arg UpsertMessageParams) (Message, error)
+	DeleteMessage(ctx context.Context) error
+	GetMessage(ctx context.Context) (Message, error)
+	UpdateMessage(ctx context.Context, message string) (Message, error)
+	UpsertMessage(ctx context.Context, message string) (Message, error)
 }
 
 var _ Querier = (*Queries)(nil)
