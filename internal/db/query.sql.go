@@ -62,3 +62,24 @@ func (q *Queries) UpdateMessage(ctx context.Context, arg UpdateMessageParams) (M
 	err := row.Scan(&i.ID, &i.Message, &i.CreatedAt)
 	return i, err
 }
+
+const upsertMessage = `-- name: UpsertMessage :one
+INSERT INTO messages (id, message)
+VALUES (?, ?)
+ON CONFLICT (id) DO UPDATE SET
+  message = excluded.message,
+  updated_at = CURRENT_TIMESTAMP
+RETURNING id, message, created_at
+`
+
+type UpsertMessageParams struct {
+	ID      int64  `json:"id"`
+	Message string `json:"message"`
+}
+
+func (q *Queries) UpsertMessage(ctx context.Context, arg UpsertMessageParams) (Message, error) {
+	row := q.db.QueryRowContext(ctx, upsertMessage, arg.ID, arg.Message)
+	var i Message
+	err := row.Scan(&i.ID, &i.Message, &i.CreatedAt)
+	return i, err
+}

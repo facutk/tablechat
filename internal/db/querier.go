@@ -13,6 +13,7 @@ type Querier interface {
 	DeleteMessage(ctx context.Context, id int64) error
 	GetMessage(ctx context.Context, id int64) (Message, error)
 	UpdateMessage(ctx context.Context, arg UpdateMessageParams) (Message, error)
+	UpsertMessage(ctx context.Context, arg UpsertMessageParams) (Message, error)
 }
 
 var _ Querier = (*Queries)(nil)

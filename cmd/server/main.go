@@ -66,7 +66,7 @@ func (app *App) messagePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	m := r.PostFormValue("message")
 
-	_, err := app.queries.UpdateMessage(app.ctx, db.UpdateMessageParams{
+	_, err := app.queries.UpsertMessage(app.ctx, db.UpsertMessageParams{
 		ID:      1, // Assuming you're updating the message with ID 1
 		Message: m,
 	})

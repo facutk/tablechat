@@ -16,3 +16,11 @@ RETURNING *;
 -- name: DeleteMessage :exec
 DELETE FROM messages
 WHERE id = ?;
+
+-- name: UpsertMessage :one
+INSERT INTO messages (id, message)
+VALUES (?, ?)
+ON CONFLICT (id) DO UPDATE SET
+  message = excluded.message,
+  updated_at = CURRENT_TIMESTAMP
+RETURNING *;
