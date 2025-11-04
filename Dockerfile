@@ -15,7 +15,7 @@ RUN go install github.com/a-h/templ/cmd/templ@latest
 RUN templ generate
 
 # Build the binary
-RUN go build -o tablechat .
+RUN go build -ldflags="-s -w" -o tablechat ./cmd/server
 
 # Final stage
 FROM alpine:latest
